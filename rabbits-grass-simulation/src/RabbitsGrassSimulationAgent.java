@@ -108,7 +108,7 @@ public class RabbitsGrassSimulationAgent implements Drawable {
 		}
 		setVXVY();
 		//energy += rabbitsGrassSimulationSpace.takeEnergyAt(x, y);
-		energy -= 0.5;
+		energy -= 10;
 	}
 
 	private boolean tryMove(int newX, int newY){

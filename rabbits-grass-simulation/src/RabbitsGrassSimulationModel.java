@@ -33,11 +33,12 @@ import uchicago.src.sim.util.SimUtilities;
 public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 	private static final int GRIDSIZE = 20;
-	private static final int NUMINITRABBITS = 30;
-	private static final int NUMINITGRASS = 200;
-	private static final int GRASSGROWTHRATE = 30;
-	private static final double BIRTHTHRESHOLD = 10.0;
+	private static final int NUMINITRABBITS = 10;
+	private static final int NUMINITGRASS = 1000;
+	private static final int GRASSGROWTHRATE = 1000;
+	private static final double BIRTHTHRESHOLD = 50.0;
 	private static final int MINENERGYLEVEL = 0;
+	private static final int BIRTHENERGY = 30;
 
 	private int gridSize = GRIDSIZE;
 	private int numInitRabbits = NUMINITRABBITS;
@@ -62,7 +63,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		}
 
 		public double getSValue() {
-			return rabbitsGrassSimulationSpace.getTotalEnergy();
+			return Math.log10((double) rabbitsGrassSimulationSpace.getTotalEnergy());
 		}
 	}
 
@@ -73,7 +74,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		}
 
 		public double getSValue() {
-			return countLivingAgents();
+			return Math.log10((double) countLivingAgents());
 		}
 	}
 
@@ -96,6 +97,8 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		displaySurface = new DisplaySurface(this, "Rabbits Model Window 1");
 		statisticsOfSpace = new OpenSequenceGraph("Amount Of Energy In Space",this);
+		statisticsOfSpace.setXRange(0, 200);
+		statisticsOfSpace.setYRange(0, 5);
 
 		registerDisplaySurface("Rabbits Model Window 1", displaySurface);
 		this.registerMediaProducer("Plot", statisticsOfSpace);
@@ -164,8 +167,8 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 		schedule.scheduleActionBeginning(0, new RabbitStep());
 		schedule.scheduleActionAtInterval(1, new AddMoreEnergyInSpace());
-		schedule.scheduleActionAtInterval(10, new RabbitCountLiving());
-		schedule.scheduleActionAtInterval(10, new RabbitUpdateEnergyInSpace());
+		schedule.scheduleActionAtInterval(1, new RabbitCountLiving());
+		schedule.scheduleActionAtInterval(1, new RabbitUpdateEnergyInSpace());
 	}
 
 
@@ -173,9 +176,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		System.out.println("buildDisplay");
 		ColorMap colorMap = new ColorMap();
 
-		// TODO: change the color map
-
-		for (int i = 1; i < 16; i++) {
+		for (int i = 1; i < 160; i++) {
 			colorMap.mapColor(i, Color.green);
 		}
 		colorMap.mapColor(0, Color.white);
@@ -198,7 +199,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 	}
 
 	private void addNewAgent() {
-		RabbitsGrassSimulationAgent rabbitsGrassSimulationAgent = new RabbitsGrassSimulationAgent(5.0);
+		RabbitsGrassSimulationAgent rabbitsGrassSimulationAgent = new RabbitsGrassSimulationAgent(BIRTHENERGY);
 		agentList.add(rabbitsGrassSimulationAgent);
 		rabbitsGrassSimulationSpace.addAgent(rabbitsGrassSimulationAgent);
 	}
@@ -221,7 +222,7 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 		for (int i = agentList.size() - 1; i >= 0 ; i--) {
 			RabbitsGrassSimulationAgent rabbitsGrassSimulationAgent = agentList.get(i);
 			if (rabbitsGrassSimulationAgent.getEnergy() >= birthThreshold) {
-				rabbitsGrassSimulationAgent.setEnergy(5.0);
+				rabbitsGrassSimulationAgent.setEnergy(rabbitsGrassSimulationAgent.getEnergy() - BIRTHENERGY);
 				addNewAgent();
 			}
 		}
@@ -302,7 +303,6 @@ public class RabbitsGrassSimulationModel extends SimModelImpl {
 
 
 	public static void main(String[] args) {
-		//System.out.println("Rabbit skeleton");
 		SimInit init = new SimInit();
 		RabbitsGrassSimulationModel model = new RabbitsGrassSimulationModel();
 		// Do "not" modify the following lines of parsing arguments
