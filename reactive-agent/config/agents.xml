@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<agents>
+	<!-- A list of agents and their behavior classes -->
+	
+	<!-- #### REACTIVE AGENTS ### -->
+
+	<agent name="reactive-rla">
+		<set class-path="bin/"/>
+		<set class-name="template.ReactiveTrained"/>
+		<set discount-factor=".95"/>
+	</agent>
+
+
+<!--	<agent name="reactive-random">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTemplate"/>-->
+<!--		<set discount-factor=".85"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla100">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor="1"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla0">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor="0"/>-->
+<!--	</agent>-->
+
+
+<!--	<agent name="reactive-rla90">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor=".90"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla80">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor=".80"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla70">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor=".70"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla60">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor=".60"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla50">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor=".50"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla40">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor=".40"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla30">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor=".30"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla20">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor=".20"/>-->
+<!--	</agent>-->
+
+<!--	<agent name="reactive-rla10">-->
+<!--		<set class-path="bin/"/>-->
+<!--		<set class-name="template.ReactiveTrained"/>-->
+<!--		<set discount-factor=".10"/>-->
+<!--	</agent>-->
+
+</agents>
