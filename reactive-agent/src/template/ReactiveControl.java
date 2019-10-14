@@ -92,7 +92,7 @@ public class ReactiveControl {
         double diff = Double.POSITIVE_INFINITY;
 
         while (diff > epsilon) {
-        	diff = 0;
+            diff = 0;
             for (ReactiveState s : states) {
                 for (City a : s.getActions()) {
                     double sum = 0.0;
