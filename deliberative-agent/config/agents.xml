@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<agents>
+	<!-- A list of agents and their behavior classes -->
+	
+	<!-- #### DELIBERATIVE AGENTS ### -->
+	<agent name="deliberative-random">
+		<set class-path="bin/"/>
+		<set class-name="template.DeliberativeTemplate"/>
+		<set algorithm="BFS"/>
+	</agent>
+
+	<agent name="deliberative-bfs">
+		<set class-path="bin/"/>
+		<set class-name="template.DeliberativeTrained"/>
+		<set algorithm="BFS"/>
+	</agent>
+
+	<agent name="deliberative-bfs2">
+		<set class-path="bin/"/>
+		<set class-name="template.DeliberativeTrained"/>
+		<set algorithm="BFS"/>
+	</agent>
+
+	<agent name="deliberative-bfs3">
+		<set class-path="bin/"/>
+		<set class-name="template.DeliberativeTrained"/>
+		<set algorithm="BFS"/>
+	</agent>
+
+	<agent name="deliberative-astar">
+		<set class-path="bin/"/>
+		<set class-name="template.DeliberativeTrained"/>
+		<set algorithm="ASTAR"/>
+	</agent>
+
+	<agent name="deliberative-astar2">
+		<set class-path="bin/"/>
+		<set class-name="template.DeliberativeTrained"/>
+		<set algorithm="ASTAR"/>
+	</agent>
+
+</agents>
