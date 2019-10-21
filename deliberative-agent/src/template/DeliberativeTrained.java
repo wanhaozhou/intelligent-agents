@@ -17,7 +17,7 @@ import logist.topology.Topology.City;
 @SuppressWarnings("unused")
 public class DeliberativeTrained implements DeliberativeBehavior {
 
-    enum Algorithm { BFS, ASTAR }
+    enum Algorithm { BFS, ASTAR, BFS_FAST }
 
     /* Environment */
     Topology topology;
@@ -72,16 +72,33 @@ public class DeliberativeTrained implements DeliberativeBehavior {
                 // ...
                 DeliberativeDispatcher bfsDispatcher = new DeliberativeDispatcher(Algorithm.BFS);
 
-                long startTime = System.nanoTime();
+                long startTime2 = System.nanoTime();
 
                 plan = bfsDispatcher.generatePlan(currState);
 
-                long endTime = System.nanoTime();
-                long timeElapsed = endTime - startTime;
+                long endTime2 = System.nanoTime();
+                long timeElapsed2 = endTime2 - startTime2;
 
 
-                System.out.println("BFS Execution time in milliseconds : " +  timeElapsed / 1000000);
+                System.out.println("BFS Execution time in milliseconds : " +  timeElapsed2 / 1000000);
                 System.out.println("total distance of bfs plan: " + plan.totalDistance());
+
+                break;
+
+            case BFS_FAST:
+                // ...
+                DeliberativeDispatcher bfsFastDispatcher = new DeliberativeDispatcher(Algorithm.BFS_FAST);
+
+                long startTime3 = System.nanoTime();
+
+                plan = bfsFastDispatcher.generatePlan(currState);
+
+                long endTime3 = System.nanoTime();
+                long timeElapsed3 = endTime3 - startTime3;
+
+
+                System.out.println("BFS Fast Execution time in milliseconds : " +  timeElapsed3 / 1000000);
+                System.out.println("total distance of bfs fast plan: " + plan.totalDistance());
 
                 break;
 

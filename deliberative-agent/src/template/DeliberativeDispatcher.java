@@ -1,15 +1,8 @@
 package template;
 
-import com.sun.xml.internal.stream.buffer.sax.DefaultWithLexicalHandler;
 import logist.plan.Action;
-import logist.simulation.Vehicle;
-import logist.agent.Agent;
-import logist.behavior.DeliberativeBehavior;
 import logist.plan.Plan;
 import logist.task.Task;
-import logist.task.TaskDistribution;
-import logist.task.TaskSet;
-import logist.topology.Topology;
 import logist.topology.Topology.City;
 
 import java.util.*;
@@ -26,24 +19,26 @@ public class DeliberativeDispatcher {
     public Plan generatePlan(DeliberativeState inputState) {
         switch (algo) {
             case BFS:
-                return BFSPlan(inputState);
+                return BFSPlan(inputState, false);
             case ASTAR:
                 return ASTARPlan(inputState);
+            case BFS_FAST:
+                return BFSPlan(inputState, true);
             default:
                 throw new AssertionError("Should not happen.");
         }
     }
 
 
-    public Plan BFSPlan(DeliberativeState inputState) {
+    private Plan BFSPlan(DeliberativeState inputState, boolean isFast) {
         City currentCity = inputState.getVehicle().getCurrentCity();
-        ArrayList<DeliberativeState> stateSeq = this.bfsSearch(inputState);
+        ArrayList<DeliberativeState> stateSeq = this.bfsSearch(inputState, isFast);
         ArrayList<Action> actions = this.convertStateToAction(stateSeq);
 
         return new Plan(currentCity, actions);
     }
 
-    public Plan ASTARPlan(DeliberativeState inputState) {
+    private Plan ASTARPlan(DeliberativeState inputState) {
         City currentCity = inputState.getVehicle().getCurrentCity();
         ArrayList<DeliberativeState> stateSeq = this.astarSearch(inputState);
         ArrayList<Action> actions = this.convertStateToAction(stateSeq);
@@ -52,8 +47,7 @@ public class DeliberativeDispatcher {
         return new Plan(currentCity, actions);
     }
 
-
-    public ArrayList<Action> convertStateToAction(ArrayList<DeliberativeState> states) {
+    private ArrayList<Action> convertStateToAction(ArrayList<DeliberativeState> states) {
         ArrayList<Action> actions = new ArrayList<>();
 
         for (int i=0; i<states.size()-1; i++) {
@@ -77,52 +71,11 @@ public class DeliberativeDispatcher {
             }
         }
 
-        //System.out.println(Arrays.toString(actions.toArray()));
-
         return actions;
     }
-    /*
-    public ArrayList<DeliberativeState> bfsSearch(DeliberativeState inputState) {
-        double costRecord = Double.MAX_VALUE;
-        ArrayList<DeliberativeState> finalPath = new ArrayList<>();
-        Queue<ArrayList<DeliberativeState>> tree = new LinkedList<>();
 
-        ArrayList<DeliberativeState> start = new ArrayList<>();
-        start.add(inputState);
-        tree.add(start);
 
-        HashSet<DeliberativeState> visited = new HashSet<>();
-
-        while (!tree.isEmpty()) {
-           ArrayList<DeliberativeState> currentPath = tree.poll();
-           DeliberativeState currentState = currentPath.get(currentPath.size()-1);
-           visited.add(currentState);
-
-           if (currentState.getTaskAvailable().size() == 0 && currentState.getTaskOnBoard().size() == 0) {
-               if (currentState.getCost() < costRecord) {
-                   costRecord = currentState.getCost();
-                   finalPath = currentPath;
-               }
-               continue;
-           }
-
-           ArrayList<DeliberativeState> children = this.getChildren(currentState);
-
-           for (DeliberativeState s: children) {
-               if (visited.contains(s)) {
-                   continue;
-               }
-               ArrayList<DeliberativeState> newPath = new ArrayList<>(currentPath);
-               newPath.add(s);
-               tree.add(newPath);
-           }
-        }
-        return finalPath;
-    }
-
-     */
-
-    public ArrayList<DeliberativeState> bfsSearch(DeliberativeState inputState) {
+    private ArrayList<DeliberativeState> bfsSearch(DeliberativeState inputState, boolean isFast) {
         double costRecord = Double.MAX_VALUE;
         ArrayList<DeliberativeState> finalPath = new ArrayList<>();
         Queue<ArrayList<DeliberativeState>> tree = new LinkedList<>();
@@ -150,12 +103,9 @@ public class DeliberativeDispatcher {
             ArrayList<DeliberativeState> children = this.getChildren(currentState);
 
             for (DeliberativeState s: children) {
-
-                //if (visited.containsKey(s) && visited.get(s) < s.getCost()) {
-                if (visited.containsKey(s)) {
+                if (visited.containsKey(s) && (isFast || visited.get(s) < s.getCost())) {
                     continue;
                 }
-
                 ArrayList<DeliberativeState> newPath = new ArrayList<>(currentPath);
                 newPath.add(s);
                 tree.add(newPath);
@@ -166,7 +116,7 @@ public class DeliberativeDispatcher {
         return finalPath;
     }
 
-    public ArrayList<DeliberativeState> astarSearch(DeliberativeState inputState) {
+    private ArrayList<DeliberativeState> astarSearch(DeliberativeState inputState) {
         ArrayList<DeliberativeState> finalPath = new ArrayList<>();
         PriorityQueue<ArrayList<DeliberativeState>> tree = new PriorityQueue<>(
                 new Comparator<ArrayList<DeliberativeState>>() {
@@ -227,7 +177,7 @@ public class DeliberativeDispatcher {
         return finalPath;
     }
 
-    public ArrayList<DeliberativeState> getChildren(DeliberativeState currentState) {
+    private ArrayList<DeliberativeState> getChildren(DeliberativeState currentState) {
         ArrayList<DeliberativeState> childrenStates = new ArrayList<>();
 
         // deliver tasks
@@ -271,7 +221,7 @@ public class DeliberativeDispatcher {
 
     }
 
-    public DeliberativeState cloneState(DeliberativeState currentState) {
+    private DeliberativeState cloneState(DeliberativeState currentState) {
         return new DeliberativeState((HashSet<Task>) currentState.getTaskOnBoard().clone(),
                                         (HashSet<Task>) currentState.getTaskAvailable().clone(),
                                         currentState.getCurrentCity(),
@@ -280,32 +230,32 @@ public class DeliberativeDispatcher {
                                         currentState.getVehicle());
     }
 
-    public ArrayList<Task> getPickupCurrentCity(DeliberativeState currentState) {
+    private ArrayList<Task> getPickupCurrentCity(DeliberativeState currentState) {
         return currentState.getTaskAvailable().stream().filter(x ->
             x.pickupCity.equals(currentState.getCurrentCity()) && (x.weight <= currentState.getSpaceLeft())
         ).collect(Collectors.toCollection(ArrayList::new));
 
     }
 
-    public ArrayList<Task> getDeliveryCurrentCity(DeliberativeState currentState) {
+    private ArrayList<Task> getDeliveryCurrentCity(DeliberativeState currentState) {
         return currentState.getTaskOnBoard().stream().filter(x ->
                 x.deliveryCity.equals(currentState.getCurrentCity()))
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public ArrayList<City> getNextCities(DeliberativeState currentState) {
+    private ArrayList<City> getNextCities(DeliberativeState currentState) {
         return currentState.getCurrentCity().neighbors().stream().filter(
                 x -> this.isNeighborPickup(x, currentState) || this.isNeighborDelivery(x, currentState)
         ).collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public boolean isNeighborPickup(City city, DeliberativeState currentState) {
+    private boolean isNeighborPickup(City city, DeliberativeState currentState) {
         City currCity = currentState.getCurrentCity();
         return currentState.getTaskAvailable().stream().anyMatch(x ->
                 currCity.pathTo(x.pickupCity).size() > 0 && currCity.pathTo(x.pickupCity).get(0).equals(city));
     }
 
-    public boolean isNeighborDelivery(City city, DeliberativeState currentState) {
+    private boolean isNeighborDelivery(City city, DeliberativeState currentState) {
         City currCity = currentState.getCurrentCity();
         return currentState.getTaskOnBoard().stream().anyMatch(x ->
                 currCity.pathTo(x.deliveryCity).size() > 0 && currCity.pathTo(x.deliveryCity).get(0).equals(city));
