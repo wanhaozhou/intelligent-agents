@@ -22,28 +22,11 @@
 		<set algorithm="BFS_Fast"/>
 	</agent>
 
-	<agent name="deliberative-bfs2">
-		<set class-path="bin/"/>
-		<set class-name="template.DeliberativeTrained"/>
-		<set algorithm="BFS"/>
-	</agent>
-
-	<agent name="deliberative-bfs3">
-		<set class-path="bin/"/>
-		<set class-name="template.DeliberativeTrained"/>
-		<set algorithm="BFS"/>
-	</agent>
-
 	<agent name="deliberative-astar">
 		<set class-path="bin/"/>
 		<set class-name="template.DeliberativeTrained"/>
 		<set algorithm="ASTAR"/>
 	</agent>
 
-	<agent name="deliberative-astar2">
-		<set class-path="bin/"/>
-		<set class-name="template.DeliberativeTrained"/>
-		<set algorithm="ASTAR"/>
-	</agent>
 
 </agents>
