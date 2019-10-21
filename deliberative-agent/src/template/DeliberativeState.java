@@ -11,6 +11,7 @@ import logist.topology.Topology;
 import logist.topology.Topology.City;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 
 
@@ -63,6 +64,7 @@ public class DeliberativeState {
 
         this.totalCost = this.heuristic + lastState.getCost() + vehicle.costPerKm() * lastState.getCurrentCity().distanceTo(currentCity);
     }
+
 
     public DeliberativeState(HashSet<Task> taskOnBoard,
                              HashSet<Task> taskAvailable,

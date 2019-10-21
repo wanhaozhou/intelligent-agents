@@ -50,7 +50,6 @@ public class DeliberativeDispatcher {
 
 
         return new Plan(currentCity, actions);
-
     }
 
 
@@ -82,7 +81,7 @@ public class DeliberativeDispatcher {
 
         return actions;
     }
-
+    /*
     public ArrayList<DeliberativeState> bfsSearch(DeliberativeState inputState) {
         double costRecord = Double.MAX_VALUE;
         ArrayList<DeliberativeState> finalPath = new ArrayList<>();
@@ -121,6 +120,52 @@ public class DeliberativeDispatcher {
         return finalPath;
     }
 
+     */
+
+    public ArrayList<DeliberativeState> bfsSearch(DeliberativeState inputState) {
+        double costRecord = Double.MAX_VALUE;
+        ArrayList<DeliberativeState> finalPath = new ArrayList<>();
+        Queue<ArrayList<DeliberativeState>> tree = new LinkedList<>();
+
+        ArrayList<DeliberativeState> start = new ArrayList<>();
+        start.add(inputState);
+        tree.add(start);
+
+        HashMap<DeliberativeState, Double> visited = new HashMap<>();
+
+        int count = 0;
+        while (!tree.isEmpty()) {
+            ArrayList<DeliberativeState> currentPath = tree.poll();
+            DeliberativeState currentState = currentPath.get(currentPath.size()-1);
+            visited.put(currentState, currentState.getCost());
+
+            if (currentState.getTaskAvailable().size() == 0 && currentState.getTaskOnBoard().size() == 0) {
+                if (currentState.getCost() < costRecord) {
+                    costRecord = currentState.getCost();
+                    finalPath = currentPath;
+                }
+                continue;
+            }
+
+            ArrayList<DeliberativeState> children = this.getChildren(currentState);
+
+            for (DeliberativeState s: children) {
+
+                //if (visited.containsKey(s) && visited.get(s) < s.getCost()) {
+                if (visited.containsKey(s)) {
+                    continue;
+                }
+
+                ArrayList<DeliberativeState> newPath = new ArrayList<>(currentPath);
+                newPath.add(s);
+                tree.add(newPath);
+            }
+            count++;
+        }
+        System.out.println("total iteration bfs: " + count);
+        return finalPath;
+    }
+
     public ArrayList<DeliberativeState> astarSearch(DeliberativeState inputState) {
         ArrayList<DeliberativeState> finalPath = new ArrayList<>();
         PriorityQueue<ArrayList<DeliberativeState>> tree = new PriorityQueue<>(
@@ -154,13 +199,14 @@ public class DeliberativeDispatcher {
         start.add(inputState);
         tree.add(start);
 
-
+        int count = 0;
         while (!tree.isEmpty()) {
             ArrayList<DeliberativeState> currentPath = tree.poll();
             DeliberativeState currentState = currentPath.get(currentPath.size()-1);
             visited.put(currentState, currentState.totalCost);
 
             if (currentState.getTaskAvailable().size() == 0 && currentState.getTaskOnBoard().size() == 0) {
+                System.out.println("total iteration astar: " + count);
                 return currentPath;
             }
 
@@ -175,9 +221,9 @@ public class DeliberativeDispatcher {
                 newPath.add(s);
                 tree.add(newPath);
             }
+            count++;
         }
 
-        System.out.println("ERROR");
         return finalPath;
     }
 
@@ -218,7 +264,6 @@ public class DeliberativeDispatcher {
             // update cost and currentCity
             nextState.setCost(currCost + newCost);
             nextState.setCurrentCity(city);
-
             childrenStates.add(nextState);
         }
 
